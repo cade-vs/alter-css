@@ -5,7 +5,7 @@ ALTER-CSS is CSS preprocessor
 
 # SYNOPSIS
 
-  alter-css  sample.in.css > sample.out.css
+    alter-css  sample.in.css > sample.out.css
 
 # DESCRIPTION
 
@@ -17,19 +17,19 @@ to separate static part of a css from the configuration part.
 Variables are defined with $ followed by varname (alphanumeric) at column 1
 (currently no indentation is allowed):
 
-  $var  value
+    $var  value
   
 Vars can be used (interpolated) anywere in the text:
 
-  background-color: $var
+    background-color: $var
   
 Single variable can hold multiple values:
 
-  $body_colors  #FFF  #000
+    $body_colors  #FFF  #000
   
 which can be used this way:
 
-  body { color: $body_colors.1; background-color: $body_colors.2; }
+    body { color: $body_colors.1; background-color: $body_colors.2; }
   
 Thre is and $body_color.0 but it is the same as $body_color and represents
 the whole value (not splitted values, though splitted values are always
