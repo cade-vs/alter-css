@@ -44,30 +44,30 @@ replace them with the multi-line value.
 When defined, block names must not be indented (at column 1, same as vars) 
 and they must be indented to be used:
 
-  /* must start at column 1 */
-  $$color_box_3d
-          color: $1;
-          background-image: none;
-          background-color: #2;
-          border-top:    solid 1px $4;
-          border-left:   solid 1px $4;
-          border-bottom: solid 1px $5;
-          border-right:  solid 1px $5;
+    /* must start at column 1 */
+    $$color_box_3d
+            color: $1;
+            background-image: none;
+            background-color: #2;
+            border-top:    solid 1px $4;
+            border-left:   solid 1px $4;
+            border-bottom: solid 1px $5;
+            border-right:  solid 1px $5;
 
 and then be used as:
 
-  .icon
-          {
-          cursor:  pointer;
-          padding: 0.4em;
-          $$color_box_3d   #FFF   #448   #559    #66A   #226
-          }
+    .icon
+            {
+            cursor:  pointer;
+            padding: 0.4em;
+            $$color_box_3d   #FFF   #448   #559    #66A   #226
+            }
         
 Blocks can have arguments, which are replaced upon use. Arguments are numbered,
 starting from 1, and are used with "$" inside block value:
 
-  $1 -- first arg
-  $2 -- second arg...
+    $1 -- first arg
+    $2 -- second arg...
   
 As vars, blocks also can access the whole argument list at any time with "$0"
 (even together with the separated arguments, $0, $1, $5, etc.)
@@ -80,7 +80,7 @@ and vars.
 
 Example file can be processed this way:
 
-  alter-css  example.in.css > result.css
+    alter-css  example.in.css > result.css
 
 # AUTHOR
 
