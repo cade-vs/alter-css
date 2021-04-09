@@ -72,6 +72,15 @@ starting from 1, and are used with "$" inside block value:
 As vars, blocks also can access the whole argument list at any time with "$0"
 (even together with the separated arguments, $0, $1, $5, etc.)
 
+# INCLUDES
+
+CSS files can be included with $$$ and full name of the CSS file. "full name" 
+means the required file name with or without path to access a file. This means
+file can have no path if it is in the current directory.
+
+    $$$include-file-name.css
+    $$$../other.css
+    
 # EXAMPLE
 
 There is an example file called "exaple.in.css", which has detailed explanation
@@ -81,6 +90,13 @@ and vars.
 Example file can be processed this way:
 
     alter-css  example.in.css > result.css
+
+# WHY $$$$s
+
+The reason to choose $, $$, $$$ is that $var is a common script languages sigil
+and is well known. $$ means "multiple lines" and $$$ is "even more lines in a 
+separate file" :) Initially @ and # are considered but they would clash with 
+CSS syntax, and $ is (still) free.
 
 # AUTHOR
 

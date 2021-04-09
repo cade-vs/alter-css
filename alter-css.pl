@@ -13,8 +13,10 @@ use strict;
 my %VARS;
 my %BLOCKS;
 
-my @data = <>;
-chomp( @data );
+my @data;
+my $input_fname = shift;
+
+load_css_file( $input_fname, \@data );
 
 while( @data )
   {
@@ -27,12 +29,28 @@ while( @data )
   print update_vars( $line ) . "\n";
   }
 
+sub load_css_file
+{
+  my $fname = shift;
+  my $ar    = shift; # result array ref
+
+  open( my $if, '<', $fname );
+  while( <$if> )
+    {
+    chomp;
+    load_css_file( $1, $ar ) and next if /\$\$\$(\S+)/;
+    push @$ar, $_;
+    }
+  close( $if );  
+  return 1;
+}
 
 sub line_set_var
 {
   my $line = shift;
+
   return undef unless $line =~ /^\$([a-z_0-9]+)\s+(.*?)\s*$/i;
-  
+
   $VARS{ uc $1 } = [ $2, split /\s+/, $2 ];
 
 #print STDERR "DEBUG: SET VAR: $1 -- $2\n";
@@ -70,7 +88,7 @@ sub line_print_block
   my $name = uc $1;
   my $args =    update_vars( $3 );
 
-print STDERR "DEBUG: GET BLOCK: $name -- $args\n";
+#print STDERR "DEBUG: GET BLOCK: $name -- $args\n";
 
   if( exists $BLOCKS{ $name } )
     {
@@ -101,7 +119,7 @@ sub __get_var
   my $var_idx  =    shift || 0;
   my $args     =    shift || [];
 
-print STDERR "DEBUG: GET VAR: $var_name -- $var_idx (@$args)\n";
+#print STDERR "DEBUG: GET VAR: $var_name -- $var_idx (@$args)\n";
   if( $var_name =~ /^\d+$/ )
     {
     return $args->[ $var_name ];
