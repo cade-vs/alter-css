@@ -1,0 +1,148 @@
+/*############################################################################
+##
+##  ALTER-CSS compact css preprocessor
+##  2021 (c) Vladi Belperchinov-Shabanski "Cade"
+##  <cade@bis.bg> <cade@biscom.net> <cade@cpan.org>
+##
+##  https://github.com/cade-vs/alter-css
+##
+##  LICENSE: GPLv2
+##
+############################################################################*/
+/*############################################################################
+##
+##  This example CSS is taken from:
+##  Decor application machinery core
+##  2014-2021 (c) Vladi Belperchinov-Shabanski "Cade"
+##  <cade@bis.bg> <cade@biscom.net> <cade@cpan.org>
+##
+##  https://github.com/cade-vs/perl-decor
+##
+##  LICENSE: GPLv2
+##
+############################################################################*/
+
+/*** DECOR SYSTEM DEFAULT CSS CONFIG *****************************************
+
+This is the config part of the css. Below this section everything is 
+static/system and is not supposed to be modified.
+
+*****************************************************************************/
+
+/* main_color defines default body foreground and background colors */
+$main_color   #444    #EEE
+
+/* this defines icon button colors, which are:
+  1. foreground/text
+  2. background
+  3. hi-light background (hover)
+  4. 3d effect upper color
+  5. 3d effect lower color
+               1.     2.     3.      4.     5.                      */
+$icon_colors   #FFF   #448   #559    #66A   #226
+
+
+/* A color simple var */
+$default_a_color  #222
+
+/*** DECOR STATIC SYSTEM CSS DEFINITIONS, DO NOT MODIFY BELOW THIS LINE ******
+
+Below this line everything is static/system and is not supposed to be modified.
+
+/*** main/body **************************************************************/
+
+html
+        {
+        height: 100%;
+        box-sizing: border-box;
+        }
+
+*, *:before, *:after 
+        {
+        box-sizing: inherit;
+        }
+
+body
+        {
+        font-family: sans-serif, helvetica;
+        margin: 0;
+        font-style: normal;
+        font-size: 10pt;
+        height: 100%;
+
+        /* using $default_color(s) */
+        color:            $main_color.1;
+        background-color: $main_color.2;
+        }
+
+/*** globals ****************************************************************/
+
+/* simple demo block, name should start at column 1, body must be indented */
+
+$$a_default
+        color: $default_a_color;
+        text-decoration: none;
+
+a       
+        {
+        $$a_default
+        text-decoration-style: dotted;
+        text-decoration-color: teal;
+        border-bottom: dotted 1px teal;
+        }
+a:hover 
+        {
+        $$a_default
+        text-decoration-style: solid;
+        text-decoration-color: aqua;
+        border-bottom: solid 1px aqua;
+        }
+
+/* 
+
+more complex block example, it expects 5 arguments:
+  1. foreground/text
+  2. background
+  3. hi-light background (hover)
+  4. 3d effect upper color
+  5. 3d effect lower color
+
+*/
+
+/* this defines normal state of the icon/button */
+$$color_box_3d
+        color: $1;
+        background-image: none;
+        background-color: #2;
+        border-top:    solid 1px $4;
+        border-left:   solid 1px $4;
+        border-bottom: solid 1px $5;
+        border-right:  solid 1px $5;
+
+/* this defines hi-lighted/hover state of the icon/button */
+$$color_box_3d_hi
+        color: $1;
+        background-image: none;
+        background-color: $3;
+        border-top:    solid 1px $5;
+        border-left:   solid 1px $5;
+        border-bottom: solid 1px $4;
+        border-right:  solid 1px $4;
+
+.icon
+        {
+        cursor:  pointer;
+        height:  2.2em;
+        padding: 0.4em;
+        margin:  0.1em;
+        text-decoration: none;
+
+        /* adds normal icon/button state with var colors set above */
+        $$color_box_3d $icon_colors
+        }
+
+.icon:hover
+        {
+        /* adds hi-lighted/hover icon/button state with var colors set above */
+        $$color_box_3d_hi $icon_colors
+        }
