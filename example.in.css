@@ -79,20 +79,20 @@ body
 
 /* simple demo block, name should start at column 1, body must be indented */
 
-=a_default
+$$a_default
         color: $default_a_color;
         text-decoration: none;
 
 a       
         {
-        =a_default
+        $$a_default
         text-decoration-style: dotted;
         text-decoration-color: teal;
         border-bottom: dotted 1px teal;
         }
 a:hover 
         {
-        =a_default
+        $$a_default
         text-decoration-style: solid;
         text-decoration-color: aqua;
         border-bottom: solid 1px aqua;
@@ -111,7 +111,7 @@ more complex block example, it expects 5 arguments:
 */
 
 /* this defines normal state of the icon/button */
-=color_box_3d
+$$color_box_3d
         color: $1;
         background-image: none;
         background-color: #2;
