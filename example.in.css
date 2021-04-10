@@ -30,7 +30,7 @@ static/system and is not supposed to be modified.
 *****************************************************************************/
 
 /* main_color defines default body foreground and background colors */
-$main_color   #444    #EEE
+$main-color   #444    #EEE
 
 /* this defines icon button colors, which are:
   1. foreground/text
@@ -71,8 +71,8 @@ body
         height: 100%;
 
         /* using $default_color(s) */
-        color:            $main_color.1;
-        background-color: $main_color.2;
+        color:            $main-color.1;
+        background-color: $main-color.2;
         }
 
 /*** globals ****************************************************************/

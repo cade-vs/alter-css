@@ -49,7 +49,7 @@ sub line_set_var
 {
   my $line = shift;
 
-  return undef unless $line =~ /^\$([a-z_0-9]+)\s+(.*?)\s*$/i;
+  return undef unless $line =~ /^\$([a-z_0-9-]+)\s+(.*?)\s*$/i;
 
   $VARS{ uc $1 } = [ $2, split /\s+/, $2 ];
 
@@ -65,7 +65,7 @@ sub line_set_block
 
 #print STDERR ">>>>>> [$line]\n";
   
-  return undef unless $line =~ /^\$\$([a-z_0-9]+)/i;
+  return undef unless $line =~ /^\$\$([a-z_0-9-]+)/i;
   my $name = uc $1;
   my @block;
 
@@ -84,7 +84,7 @@ sub line_set_block
 sub line_print_block
 {
   my $line = shift;
-  return undef unless $line =~ /^\s+\$\$([a-z_0-9]+)(\s+(.*?)\s*)?$/i;
+  return undef unless $line =~ /^\s+\$\$([a-z_0-9-]+)(\s+(.*?)\s*)?$/i;
   my $name = uc $1;
   my $args =    update_vars( $3 );
 
@@ -108,7 +108,7 @@ sub update_vars
   my $line = shift;
   my $args = shift;
 
-  $line =~ s/\$([a-z_0-9]+)(\.(\d+))?/__get_var( $1, $3, $args )/gie;
+  $line =~ s/\$([a-z_0-9-]+)(\.(\d+))?/__get_var( $1, $3, $args )/gie;
   
   return $line;
 }
