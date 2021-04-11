@@ -80,6 +80,18 @@ file can have no path if it is in the current directory.
 
     $$$include-file-name.css
     $$$../other.css
+
+# COMMENTS
+
+ALTER-CSS will skip and will not produce in output file all comment lines 
+which start with:
+
+    /*$
+
+Those are for commenting variables, blocks, includes, which will not be in the
+output file and will be confusing to leave comments for those empty spaces.
+
+    PLEASE NOTE: This will work only for single line comments: /*$ ... */
     
 # EXAMPLE
 
