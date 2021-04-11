@@ -22,6 +22,7 @@ while( @data )
   {
   my $line = shift @data;
   
+  next if $line =~ /^\s*\/\*\$/; # alter-css comments   /*$ ... */
   next if line_set_var( $line );
   next if line_set_block( $line, \@data );
   next if line_print_block( $line );
