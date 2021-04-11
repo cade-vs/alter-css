@@ -13,6 +13,9 @@ use strict;
 my %VARS;
 my %BLOCKS;
 
+$VARS{ 'ALTER_CSS_GEN_WARNING' } = [ "THIS FILE IS GENERATED! PLEASE, DO NOT MODIFY!" ];
+$VARS{ 'ALTER_CSS_GEN_TIME'    } = [ scalar localtime( time() ) ];
+
 my @data;
 my $input_fname = shift;
 

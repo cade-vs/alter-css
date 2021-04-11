@@ -92,6 +92,28 @@ Those are for commenting variables, blocks, includes, which will not be in the
 output file and will be confusing to leave comments for those empty spaces.
 
     PLEASE NOTE: This will work only for single line comments: /*$ ... */
+
+# PREDEFINED VARS
+
+There are several predefined variables:
+
+    $ALTER_CSS_GEN_WARNING  
+        this has value text of 
+        "THIS FILE IS GENERATED! PLEASE, DO NOT MODIFY!"
+        
+    $ALTER_CSS_GEN_TIME
+        this has the generation date and time
+
+The puprose of $ALTER_CSS_GEN_WARNING and $ALTER_CSS_GEN_TIME to add aditional
+hints in the output file that this file is generated (i.e. modifications may
+not have an effect), and when it is generated.
+
+Usual use will be:
+
+    /* $ALTER_CSS_GEN_WARNING -- GENERATED AT $ALTER_CSS_GEN_TIME */
+
+so in the output file will be a comment saying do not modify the file and
+time of generation.
     
 # EXAMPLE
 
