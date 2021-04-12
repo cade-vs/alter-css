@@ -54,8 +54,9 @@ sub line_set_var
   my $line = shift;
 
   return undef unless $line =~ /^\$([a-z_0-9-]+)\s+(.*?)\s*$/i;
+  my $args = update_vars( $2 );
 
-  $VARS{ uc $1 } = [ $2, split /\s+/, $2 ];
+  $VARS{ uc $1 } = [ $args, split /\s+/, $args ];
 
 #print STDERR "DEBUG: SET VAR: $1 -- $2\n";
 
