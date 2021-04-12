@@ -22,14 +22,16 @@
 ##
 ############################################################################*/
 
+/* $ALTER_CSS_GEN_WARNING -- GENERATED AT $ALTER_CSS_GEN_TIME */
+
 /*** DECOR SYSTEM DEFAULT CSS CONFIG *****************************************
 
-This is the config part of the css. Below this section everything is 
-static/system and is not supposed to be modified.
+/*$ This is the config part of the css. Below this section everything is    */
+/*$ static/system and is not supposed to be modified.                       */
 
-*****************************************************************************/
+/****************************************************************************/
 
-/* main_color defines default body foreground and background colors */
+/*$ main_color defines default body foreground and background colors */
 $main-color   #444    #EEE
 
 /* this defines icon button colors, which are:
@@ -42,12 +44,10 @@ $main-color   #444    #EEE
 $icon_colors   #FFF   #448   #559    #66A   #226
 
 
-/* A color simple var */
+/*$ A color simple var */
 $default_a_color  #222
 
-/*** DECOR STATIC SYSTEM CSS DEFINITIONS, DO NOT MODIFY BELOW THIS LINE ******
-
-Below this line everything is static/system and is not supposed to be modified.
+/*$* DECOR STATIC SYSTEM CSS DEFINITIONS, DO NOT MODIFY BELOW THIS LINE ******
 
 /*** main/body **************************************************************/
 
