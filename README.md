@@ -35,6 +35,40 @@ Thre is and $body_color.0 but it is the same as $body_color and represents
 the whole value (not splitted values, though splitted values are always
 available).
 
+# VARS AND BLOCKS NAMES
+
+Vars and blocks names can include letters, numbers, dash and underscore.
+ALTER-CSS is case insensitive and does not make difference between dashes
+and underscores:
+
+  "var-NAME"   is the same as   "VAR_name"
+
+Tech note (not visible to users): ALTER-CSS converts internally all names 
+to uppercase with underscores.
+
+# COLOR BUMPS
+
+All colors can have scale bumps. Scale bump is a number, which pushes all
+values up or down:
+
+  #158+3   will become   #48B
+  #FC2-4   will become   #B80
+  #FFF+2   will stay     #FFF
+  #002-5   will become   #000
+
+Vars, which contain colors can also be bumped, but since minus sign is valid
+var name (dash), bumps must be separated with slash "/":
+
+  color: $action-color/+2
+  border: solid 1px $action-color/-2
+  
+Multiple var values can be used as usual:  
+
+  color: $action-color.1/+2
+  border: solid 1px $action-color.3/-2
+  
+etc.
+
 # BLOCKS
 
 Blocks are multi-line variables. They cannot be interpolated in the text but
@@ -136,7 +170,7 @@ CSS syntax, and $ is (still) free.
 
     Vladi Belperchinov-Shabanski "Cade" 
 
-    <cade@bis.bg> <cade@noxrun.com> <cade@cpan.org>
+    <cade@noxrun.com> <cade@bis.bg> <cade@cpan.org>
 
     https://github.com/cade-vs/alter-css
 

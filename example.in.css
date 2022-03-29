@@ -1,8 +1,8 @@
 /*############################################################################
 ##
 ##  ALTER-CSS compact css preprocessor
-##  2021 (c) Vladi Belperchinov-Shabanski "Cade"
-##  <cade@bis.bg> <cade@biscom.net> <cade@cpan.org>
+##  2021-2022 (c) Vladi Belperchinov-Shabanski "Cade"
+##  <cade@noxrun.com> <cade@bis.bg> <cade@cpan.org>
 ##
 ##  https://github.com/cade-vs/alter-css
 ##
@@ -13,8 +13,8 @@
 ##
 ##  This example CSS is taken from:
 ##  Decor application machinery core
-##  2014-2021 (c) Vladi Belperchinov-Shabanski "Cade"
-##  <cade@bis.bg> <cade@biscom.net> <cade@cpan.org>
+##  2014-2022 (c) Vladi Belperchinov-Shabanski "Cade"
+##  <cade@noxrun.com> <cade@bis.bg> <cade@cpan.org>
 ##
 ##  https://github.com/cade-vs/perl-decor
 ##
@@ -140,6 +140,8 @@ $$color_box_3d_hi
 
         /* adds normal icon/button state with var colors set above */
         $$color_box_3d $icon_colors
+        
+        bump-up: $icon-colors.2/+2
         }
 
 .icon:hover

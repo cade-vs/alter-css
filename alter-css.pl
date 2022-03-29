@@ -2,8 +2,8 @@
 ##############################################################################
 ##
 ##  ALTER-CSS compact CSS preprocessor
-##  2021 (c) Vladi Belperchinov-Shabanski "Cade"
-##  <cade@bis.bg> <cade@biscom.net> <cade@cpan.org>
+##  2021-2022 (c) Vladi Belperchinov-Shabanski "Cade"
+##  <cade@noxrun.com> <cade@bis.bg> <cade@cpan.org>
 ##
 ##  LICENSE: GPLv2
 ##
@@ -12,6 +12,7 @@ use strict;
 
 my %VARS;
 my %BLOCKS;
+my $HEXES = '0123456789ABCDEF';
 
 $VARS{ 'ALTER_CSS_GEN_WARNING' } = [ "THIS FILE IS GENERATED! PLEASE, DO NOT MODIFY!" ];
 $VARS{ 'ALTER_CSS_GEN_TIME'    } = [ scalar localtime( time() ) ];
@@ -56,7 +57,7 @@ sub line_set_var
   return undef unless $line =~ /^\$([a-z_0-9-]+)\s+(.*?)\s*$/i;
   my $args = update_vars( $2 );
 
-  $VARS{ uc $1 } = [ $args, split /\s+/, $args ];
+  $VARS{ fix_var_name( $1 ) } = [ $args, split /\s+/, $args ];
 
   return 1;
 }
@@ -67,7 +68,7 @@ sub line_set_block
   my $data = shift;
 
   return undef unless $line =~ /^\$\$([a-z_0-9-]+)/i;
-  my $name = uc $1;
+  my $name = fix_var_name( $1 );
   my @block;
 
   while( @$data and $data->[ 0 ] =~ /^\s+\S/ )
@@ -84,8 +85,8 @@ sub line_print_block
 {
   my $line = shift;
   return undef unless $line =~ /^\s+\$\$([a-z_0-9-]+)(\s+(.*?)\s*)?$/i;
-  my $name = uc $1;
-  my $args =    update_vars( $3 );
+  my $name = fix_var_name( $1 );
+  my $args = update_vars( $3 );
 
   if( exists $BLOCKS{ $name } )
     {
@@ -105,17 +106,48 @@ sub update_vars
   my $line = shift;
   my $args = shift;
 
-  $line =~ s/\$([a-z_0-9-]+)(\.(\d+))?/__get_var( $1, $3, $args )/gie;
+  $line =~ s/\$([a-z_0-9-]+)(\.(\d+))?(\/([\+\-]\d+))?/__get_var( $1, $3, $args, $5 )/gie;
+  $line =~ s/#([0-9A-F]{3,6})([\+\-])(\d+)/__precolor( $1, $2, $3 )/gie;
   return $line;
+}
+
+sub fix_var_name
+{
+  my $name = shift;
+  $name =~ s/-/_/g;
+  return uc $name;
 }
 
 sub __get_var
 {
-  my $var_name = uc shift;
+  my $var_name = fix_var_name( shift );
   my $var_idx  =    shift || 0;
   my $args     =    shift || [];
+  my $bump     =    shift;
 
-  return $args->[ $var_name ] if$var_name =~ /^\d+$/;
-  return $VARS{ $var_name }[ $var_idx ] if exists $VARS{ $var_name };
+  return $args->[ $var_name ] . $bump           if $var_name =~ /^\d+$/;
+  return $VARS{ $var_name }[ $var_idx ] . $bump if exists $VARS{ $var_name };
   return undef; # TODO: warning: unknown var name. error? fatal?
+}
+
+sub __precolor
+{
+  my $color  = shift;
+  my $updown = shift;
+  my $scale  = shift;
+  
+  return '#' . join( '', map { __precolor_fix( $_, $updown, $scale ) } split //, uc $color );
+}
+
+sub __precolor_fix
+{
+  my $color  = shift;
+  my $updown = shift;
+  my $scale  = shift;
+
+  my $c = index( $HEXES, $color );
+  $c = $updown eq '+' ? $c + $scale : $c - $scale;
+  $c =  0 if $c < 0;
+  $c = 15 if $c > 15;
+  return substr( $HEXES, $c, 1 );
 }
