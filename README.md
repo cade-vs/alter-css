@@ -29,7 +29,11 @@ Single variable can hold multiple values:
   
 which can be used this way:
 
-    body { color: $body_colors.1; background-color: $body_colors.2; }
+    body 
+       { 
+       color:            $body_colors.1; 
+       background-color: $body_colors.2; 
+       }
   
 Thre is and $body_color.0 but it is the same as $body_color and represents
 the whole value (not splitted values, though splitted values are always
@@ -41,7 +45,7 @@ Vars and blocks names can include letters, numbers, dash and underscore.
 ALTER-CSS is case insensitive and does not make difference between dashes
 and underscores:
 
-  "var-NAME"   is the same as   "VAR_name"
+    "var-NAME"   is the same as   "VAR_name"
 
 Tech note (not visible to users): ALTER-CSS converts internally all names 
 to uppercase with underscores.
@@ -51,21 +55,21 @@ to uppercase with underscores.
 All colors can have scale bumps. Scale bump is a number, which pushes all
 values up or down:
 
-  #158+3   will become   #48B
-  #FC2-4   will become   #B80
-  #FFF+2   will stay     #FFF
-  #002-5   will become   #000
+    #158+3   will become   #48B
+    #FC2-4   will become   #B80
+    #FFF+2   will stay     #FFF
+    #002-5   will become   #000
 
 Vars, which contain colors can also be bumped, but since minus sign is valid
 var name (dash), bumps must be separated with slash "/":
 
-  color: $action-color/+2
-  border: solid 1px $action-color/-2
+    color: $action-color/+2
+    border: solid 1px $action-color/-2
   
 Multiple var values can be used as usual:  
 
-  color: $action-color.1/+2
-  border: solid 1px $action-color.3/-2
+    color:            $action-color.1/+2
+    border: solid 1px $action-color.3/-2
   
 etc.
 
