@@ -30,10 +30,10 @@ Single variable can hold multiple values:
 which can be used this way:
 
     body 
-       { 
-       color:            $body_colors.1; 
-       background-color: $body_colors.2; 
-       }
+      { 
+      color:            $body_colors.1; 
+      background-color: $body_colors.2; 
+      }
   
 Thre is and $body_color.0 but it is the same as $body_color and represents
 the whole value (not splitted values, though splitted values are always
