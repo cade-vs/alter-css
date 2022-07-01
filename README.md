@@ -174,7 +174,8 @@ CSS syntax, and $ is (still) free.
 
     Vladi Belperchinov-Shabanski "Cade" 
 
-    <cade@noxrun.com> <cade@bis.bg> <cade@cpan.org>
+          <cade@noxrun.com> <cade@bis.bg> <cade@cpan.org>
+    http://cade.noxrun.com
 
     https://github.com/cade-vs/alter-css
 
