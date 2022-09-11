@@ -53,13 +53,13 @@ while( @ARGV )
   if( /^-i/ )
     {
     push @inc, shift;
-    print "added include path [$inc[-1]] \n";
+    print STDERR "added include path [$inc[-1]] \n";
     next;
     }
   if( /^-d/ )
     {
     $DEBUG++;
-    print "option: debug level raised, now is [$DEBUG] \n";
+    print STDERR "option: debug level raised, now is [$DEBUG] \n";
     next;
     }
   if( /^(--?h(elp)?|help)$/io )
