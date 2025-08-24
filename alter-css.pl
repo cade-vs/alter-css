@@ -23,14 +23,24 @@ $VARS{ 'ALTER_CSS_GEN_WARNING' } = [ "THIS FILE IS GENERATED! PLEASE, DO NOT MOD
 $VARS{ 'ALTER_CSS_GEN_TIME'    } = [ scalar localtime( time() ) ];
 
 our $help_text = <<END;
-ALTER-CSS version $VERSION 2021-2022 (c) Vladi Belperchinov <cade\@noxrun.com>
+ALTER-CSS version $VERSION 2021-2025 (c) Vladi Belperchinov <cade\@noxrun.com>
 usage: 
     $0 <options> input-file.css > result-file.css
 options:
     -d        -- increase DEBUG level (can be used multiple times)
     -i path   -- add include path(s) to search for css templates
-                 (can be used multiple times, '.' is always searched) 
+                 (can be used multiple times, if not used, '.' will be added) 
+    -S        -- do not suppress empty lines in the output
     --        -- end of options
+notes:
+    * by default alter-css will not produce empty lines in the output,
+      unless -s option is used
+    * alter-css allows own comments starting with /*\$ and end with */
+      they will not be produced in the output text
+    * multi-line comments must begin on a new line, which starts with /*\$
+      and must end with a line which starts with */
+      begin and end lines of a multi-line comments are not produced in output
+    * current directory ('.') will be searched by default if no -i given  
 END
 
 if( @ARGV == 0 )
@@ -39,7 +49,9 @@ if( @ARGV == 0 )
   exit;
   }
 
-my @inc = ( '.' );
+my @inc;
+
+my $opt_no_empty_lines = 1;
 
 our @args;
 while( @ARGV )
@@ -56,6 +68,11 @@ while( @ARGV )
     print STDERR "added include path [$inc[-1]] \n";
     next;
     }
+  if( /^-S/ )
+    {
+    $opt_no_empty_lines = 0;
+    next;
+    }
   if( /^-d/ )
     {
     $DEBUG++;
@@ -70,19 +87,38 @@ while( @ARGV )
   push @args, $_;
   }
 
+@inc = ( '.' ) unless @inc;
+
 my @data;
 my $input_fname = shift @args;
 
 load_css_file( $input_fname, \@data );
 
+my $lc;
 while( @data )
   {
   my $line = shift @data;
+  $lc++;
+
+  # remove inline comments
+  $line =~ s/\/\*\$.*?\*\///g;
+  # multi-line comments: begin on line starting with /*$ and end on line starting with */
+  if( $line =~ /^\s*\/\*\$/ )
+    {
+    while( @data )
+      {
+      $line = shift @data;
+      $lc++;
+      last if $line =~ /^[^\*]*\*\//;
+      }
+    next;
+    }
   
-  next if $line =~ /^\s*\/\*\$/; # alter-css comments   /*$ ... */
   next if line_set_var( $line );
   next if line_set_block( $line, \@data );
   next if line_print_block( $line );
+
+  next if $line !~ /\S/ and $opt_no_empty_lines;
   
   print update_vars( $line ) . "\n";
   }
@@ -101,6 +137,9 @@ sub load_css_file
   die "error: cannot find file [$fname] in search paths [@inc] output file may be broken!\n" unless -e $ffname;  
 
   open( my $if, '<', $ffname ) or die "error: cannot read file [$ffname] output file may be broken!\n";
+  
+  print STDERR "loading file: $ffname\n" if $DEBUG;
+  
   while( <$if> )
     {
     chomp;
