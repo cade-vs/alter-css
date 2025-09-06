@@ -10,6 +10,7 @@
 ##
 ##############################################################################
 use strict;
+use Cwd qw( abs_path );
 
 my $DEBUG;
 
@@ -90,7 +91,7 @@ while( @ARGV )
 @inc = ( '.' ) unless @inc;
 
 my @data;
-my $input_fname = shift @args;
+my $input_fname = abs_path( shift @args );
 
 load_css_file( $input_fname, \@data );
 
@@ -128,13 +129,9 @@ sub load_css_file
   my $fname = shift;
   my $ar    = shift; # result array ref
 
-  my $ffname;
-  for( @inc )
-    {
-    $ffname = "$_/$fname";
-    last if -e $ffname;
-    }
-  die "error: cannot find file [$fname] in search paths [@inc] output file may be broken!\n" unless -e $ffname;  
+  print STDERR "requesting file: $fname\n" if $DEBUG;
+
+  my $ffname = find_file( $fname );
 
   open( my $if, '<', $ffname ) or die "error: cannot read file [$ffname] output file may be broken!\n";
   
@@ -143,11 +140,27 @@ sub load_css_file
   while( <$if> )
     {
     chomp;
+    print STDERR "LINE [$_]\n" if $DEBUG > 1;
     load_css_file( $1, $ar ) and next if /\$\$\$(\S+)/;
     push @$ar, $_;
     }
   close( $if );  
   return 1;
+}
+
+sub find_file
+{
+  my $fname = shift;
+
+  return $fname if $fname =~ /^\//; # assume absolute file name location
+  
+  for( @inc )
+    {
+    my $ffname = "$_/$fname";
+    print STDERR "LOOKING FOR FILE [$ffname]\n" if $DEBUG > 1;
+    return $ffname if -e $ffname;
+    }
+  die "error: cannot find file [$fname] in search paths [@inc] output file may be broken!\n";
 }
 
 sub line_set_var
