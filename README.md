@@ -39,6 +39,14 @@ Thre is and $body_color.0 but it is the same as $body_color and represents
 the whole value (not splitted values, though splitted values are always
 available).
 
+Vars can self-reference:
+
+    $button_colors  #FFF  $2+4  #336699
+
+second item in this var will take value from the third and will bump it 4,
+result in $button_colors.2 will be #77AADD.  Vars with name '$digit' are
+expanded only at the same line of the var definition.
+
 # VARS AND BLOCKS NAMES
 
 Vars and blocks names can include letters, numbers, dash and underscore.

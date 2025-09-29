@@ -168,9 +168,17 @@ sub line_set_var
   my $line = shift;
 
   return undef unless $line =~ /^\$([a-z_0-9-]+)\s+(.*?)\s*$/i;
-  my $args = update_vars( $2 );
+#  my $args = update_vars( $2 );
+#
+#  $VARS{ fix_var_name( $1 ) } = [ $args, split /\s+/, $args ];
 
-  $VARS{ fix_var_name( $1 ) } = [ $args, split /\s+/, $args ];
+#  my $args = update_vars( $2 );
+#
+  my @args = ( $2, split /\s+/, $2 );
+  
+  $_ = update_vars( $_, \@args ) for @args;
+
+  $VARS{ fix_var_name( $1 ) } = \@args;
 
   return 1;
 }
