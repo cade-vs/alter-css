@@ -180,7 +180,7 @@ sub line_set_var
 
   return undef unless $line =~ /^\$([a-z_0-9-]+)\s+(.*?)\s*$/i;
   my $var_name = $1;
-  my $args     = $2;
+  my $args     = update_vars( $2 );
 
   my @args = ( undef, split /\s+/, $args );
   
