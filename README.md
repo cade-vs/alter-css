@@ -12,6 +12,13 @@ ALTER-CSS is CSS preprocessor
 ALTER-CSS provides compact implementation of variables and blocks
 to separate static part of a css from the configuration part.
 
+ALTER-CSS is written in Perl and has no external dependencies outside Perl's
+core modules.
+
+ALTER-CSS takes CSS text with defined variables, blocks and file includes and
+produce flat CSS file with all variables and blocks values replaced. It also
+supports "color bumping" (see below).
+
 # VARS
 
 Variables are defined with $ followed by varname (alphanumeric) at column 1
@@ -50,9 +57,9 @@ current items list.
 
 # VARS AND BLOCKS NAMES
 
-Vars and blocks names can include letters, numbers, dash and underscore.
-ALTER-CSS is case insensitive and does not make difference between dashes
-and underscores:
+Vars and blocks names can include letters, numbers, dash and underscore but 
+must start with a letter. ALTER-CSS is case insensitive and does not make 
+difference between dashes and underscores:
 
     "var-NAME"   is the same as   "VAR_name"
 
