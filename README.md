@@ -172,6 +172,45 @@ Usual use will be:
 
 so in the output file will be a comment saying do not modify the file and
 time of generation.
+
+# LAZY EVALUATION
+
+All vars' values are used on demand, which means that it is possible to 
+reference non-existing-yet var as long as it is inside var or block definition.
+
+See "examples/self.in.css" file:
+
+    $$setup-act-fg-bg-border
+            color:            $1;
+            background-color: $in;
+            border: solid 2px $3;
+
+    $in $bu.2
+    $bu #123 #445599 #778899+2
+
+    $asd #f00 $3+3 $in/-2
+    $qwe #123 $3+2 $1+2
+
+    color1: $asd.2
+    color2: $qwe.2
+
+      $$setup-act-fg-bg-border  $bu
+
+$in references $bu, but it is ok since value was not yet requested, which
+happens when color1 value is requested lines below.
+
+Also the setup-act-fg-bg-color block references $in, which is not yet defined,
+but it is ok since when used later $in will already have value.
+
+That said, variables defined after usage lines will produce error:
+
+    $in   $bu
+    
+    color: $in
+    
+    $bu   #456
+
+will fail with "error: unknown var name [BU] in line [color: $in]"
     
 # EXAMPLE
 

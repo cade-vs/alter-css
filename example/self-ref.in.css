@@ -1,9 +1,17 @@
 
-$in #445599
+$$setup-act-fg-bg-border
+        color:            $1;
+        background-color: $in;
+        border: solid 2px $3;
 
-$asd #f00 $3+2 $in+2
+$in $bu.2
+$bu #123 #445599 #778899+2
+
+$asd #f00 $3+3 $in/-2
 $qwe #123 $3+2 $1+2
 
 color1: $asd.2
 color2: $qwe.2
+
+  $$setup-act-fg-bg-border  $bu
 

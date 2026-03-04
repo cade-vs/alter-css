@@ -132,7 +132,7 @@ while( @data )
 
   next if $line !~ /\S/ and $opt_no_empty_lines;
   
-  print update_vars( $line ) . "\n";
+  print update_bumps( update_vars( $line ) ) . "\n";
   }
 
 sub load_css_file
@@ -182,17 +182,24 @@ sub line_set_var
   my $var_name = $1;
   my $args     = $2;
 
+print STDERR "\nLIN [$line]\n";
+
+print STDERR "RAW $args\n";
+
+##  $args = update_vars( $args );
+
+print STDERR "PPP $args\n";
+  
   my @args = ( undef, split /\s+/, $args );
 
-#print STDERR "\nLIN [$line]\n";
-#print STDERR "<<< " . join( '|', @args ) . "\n";
+print STDERR "<<< " . join( '|', @args ) . "\n";
   
-  $_ = update_vars( $_, \@args ) for @args;
+  $_ =  update_refs( $_, \@args ) for @args;
+###  $_ =  update_bumps( $_, \@args ) for @args;
   
   $args[0] = join ' ', @args[1..$#args];
 
-
-#print STDERR ">>> " . join( '|', @args ) . "\n";
+print STDERR ">>> " . join( '|', @args ) . "\n";
 
   $VARS{ fix_var_name( $1 ) } = \@args;
 
@@ -228,10 +235,13 @@ sub line_print_block
   my $name = fix_var_name( $1 );
   my $args = update_vars( $3 );
 
+print STDERR "BLOCK PPP $args\n";
+
   if( exists $BLOCKS{ $name } )
     {
     my @args = ( $args, split /\s+/, $args );
-    print update_vars( $_, \@args ) . "\n" for @{ $BLOCKS{ $name } };
+print STDERR ">>> " . join( '|', @args ) . "\n";
+    print update_bumps( update_refs( update_vars( $_ ), \@args ) ) . "\n" for @{ $BLOCKS{ $name } };
     }
   else
     {
@@ -241,14 +251,29 @@ sub line_print_block
   return 1;
 }
 
-sub update_vars
+sub update_refs
 {
   my $line = shift;
   my $args = shift || [];
   my $seen = shift || {};
 
-  $line =~ s/\$([a-z_0-9-]+)(\.(\d+))?(\/([\+\-]\d+))?/__get_var( $1, $3, $args, $5, $seen )/gie;
-  $line =~ s/#([0-9A-F]{3,6})([\+\-])(\d+)/__precolor( $1, $2, $3, $seen )/gie;
+  $line =~ s/\$(\d+)/__get_ref( $1, $args, $seen )/gie;
+  return $line;
+}
+
+sub update_vars
+{
+  my $line = shift;
+  my $args = shift || [];
+
+  $line =~ s/\$([a-z_][a-z_0-9-]*)(\.(\d+))?/__get_var( $1, $3, $args )/gie;
+  return $line;
+}
+
+sub update_bumps
+{
+  my $line = shift;
+  $line =~ s/#([0-9A-F]{3,6})\/?(([\+\-]\d+)+)/__precolor( $1, $2 )/gie;
   return $line;
 }
 
@@ -259,29 +284,41 @@ sub fix_var_name
   return uc $name;
 }
 
+sub __get_ref
+{
+  my $ref      = shift;
+  my $args     =    shift || [];
+  my $seen     =    shift || {};
+
+  die "error: loop detected in line [$last_line]\n" if $seen->{ "$ref" }++;
+  die "error: referencing out of bounds [$ref] in line [$last_line]\n" if $ref > $#$args;
+  return update_refs( $args->[ $ref ], $args, $seen );
+}
+
 sub __get_var
 {
   my $var_name = fix_var_name( shift );
   my $var_idx  =    shift || 0;
   my $args     =    shift || [];
-  my $bump     =    shift;
-  my $seen     =    shift || {};
 
-  die "error: loop detected in line [$last_line]\n" if $seen->{ "$var_name.$var_idx" }++;
-  #print STDERR "+++ [$var_name] [$var_idx] [@$args] $bump\n";
-
-  return update_vars( $args->[ $var_name ] . $bump, $args, $seen )           if $var_name =~ /^\d+$/;
-  return update_vars( $VARS{ $var_name }[ $var_idx ] . $bump, $args, $seen ) if exists $VARS{ $var_name };
+  return update_vars( $VARS{ $var_name }[ $var_idx ] ) if exists $VARS{ $var_name };
   die "error: unknown var name [$var_name] in line [$last_line]\n" unless $opt_no_missing;
 }
 
 sub __precolor
 {
   my $color  = shift;
-  my $updown = shift;
-  my $scale  = shift;
+  my $bumps  = shift;
+
+  while( $bumps =~ /([\+\-])(\d+)/g )
+    {
+    my $updown = $1;
+    my $scale  = $2;
+    
+    $color = join( '', map { __precolor_fix( $_, $updown, $scale ) } split //, uc $color );
+    }
   
-  return '#' . join( '', map { __precolor_fix( $_, $updown, $scale ) } split //, uc $color );
+  return '#' . $color;
 }
 
 sub __precolor_fix
