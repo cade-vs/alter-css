@@ -182,29 +182,13 @@ sub line_set_var
   my $var_name = $1;
   my $args     = $2;
 
-print STDERR "\nLIN [$line]\n";
-
-print STDERR "RAW $args\n";
-
-##  $args = update_vars( $args );
-
-print STDERR "PPP $args\n";
-  
   my @args = ( undef, split /\s+/, $args );
-
-print STDERR "<<< " . join( '|', @args ) . "\n";
   
   $_ =  update_refs( $_, \@args ) for @args;
-###  $_ =  update_bumps( $_, \@args ) for @args;
   
   $args[0] = join ' ', @args[1..$#args];
 
-print STDERR ">>> " . join( '|', @args ) . "\n";
-
   $VARS{ fix_var_name( $1 ) } = \@args;
-
-#use Data::Dumper;
-#print STDERR "DDD " . Dumper( \%VARS ) . "\n";
 
   return 1;
 }
@@ -235,12 +219,9 @@ sub line_print_block
   my $name = fix_var_name( $1 );
   my $args = update_vars( $3 );
 
-print STDERR "BLOCK PPP $args\n";
-
   if( exists $BLOCKS{ $name } )
     {
     my @args = ( $args, split /\s+/, $args );
-print STDERR ">>> " . join( '|', @args ) . "\n";
     print update_bumps( update_refs( update_vars( $_ ), \@args ) ) . "\n" for @{ $BLOCKS{ $name } };
     }
   else
