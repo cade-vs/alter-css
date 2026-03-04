@@ -32,6 +32,7 @@ options:
     -i path   -- add include path(s) to search for css templates
                  (can be used multiple times, if not used, '.' will be added) 
     -S        -- do not suppress empty lines in the output
+    -q        -- quiet mode, will not report missing vars or blocks
     --        -- end of options
 notes:
     * by default alter-css will not produce empty lines in the output,
@@ -53,6 +54,7 @@ if( @ARGV == 0 )
 my @inc;
 
 my $opt_no_empty_lines = 1;
+my $opt_no_missing = 0;
 
 our @args;
 while( @ARGV )
@@ -72,6 +74,11 @@ while( @ARGV )
   if( /^-S/ )
     {
     $opt_no_empty_lines = 0;
+    next;
+    }
+  if( /^-q/ )
+    {
+    $opt_no_missing = 1;
     next;
     }
   if( /^-d/ )
@@ -95,26 +102,30 @@ my $input_fname = abs_path( shift @args );
 
 load_css_file( $input_fname, \@data );
 
+my $last_line;
+
 my $lc;
 while( @data )
   {
   my $line = shift @data;
   $lc++;
 
-  # remove inline comments
-  $line =~ s/\/\*\$.*?\*\///g;
-  # multi-line comments: begin on line starting with /*$ and end on line starting with */
-  if( $line =~ /^\s*\/\*\$/ )
+  $line =~ s|/\*\$.*?\*/||; # remove single line comments
+  
+  # multi-line comments: begin on line starting with /// and end on line starting with ---
+  if( $line =~ m|^\s*/\*\$| )
     {
     while( @data )
       {
       $line = shift @data;
       $lc++;
-      last if $line =~ /^[^\*]*\*\//;
+      last if $line =~ m|^\s*\*/|;
       }
     next;
     }
-  
+
+  $last_line = $line;
+
   next if line_set_var( $line );
   next if line_set_block( $line, \@data );
   next if line_print_block( $line );
@@ -168,17 +179,25 @@ sub line_set_var
   my $line = shift;
 
   return undef unless $line =~ /^\$([a-z_0-9-]+)\s+(.*?)\s*$/i;
-#  my $args = update_vars( $2 );
-#
-#  $VARS{ fix_var_name( $1 ) } = [ $args, split /\s+/, $args ];
+  my $var_name = $1;
+  my $args     = $2;
 
-#  my $args = update_vars( $2 );
-#
-  my @args = ( $2, split /\s+/, $2 );
+  my @args = ( undef, split /\s+/, $args );
+
+#print STDERR "\nLIN [$line]\n";
+#print STDERR "<<< " . join( '|', @args ) . "\n";
   
   $_ = update_vars( $_, \@args ) for @args;
+  
+  $args[0] = join ' ', @args[1..$#args];
+
+
+#print STDERR ">>> " . join( '|', @args ) . "\n";
 
   $VARS{ fix_var_name( $1 ) } = \@args;
+
+#use Data::Dumper;
+#print STDERR "DDD " . Dumper( \%VARS ) . "\n";
 
   return 1;
 }
@@ -216,7 +235,7 @@ sub line_print_block
     }
   else
     {
-    # TODO: warning: unknown block name. error? fatal?
+    die "error: unknown block name [$name] in line [$last_line]\n" unless $opt_no_missing;
     }  
 
   return 1;
@@ -225,10 +244,11 @@ sub line_print_block
 sub update_vars
 {
   my $line = shift;
-  my $args = shift;
+  my $args = shift || [];
+  my $seen = shift || {};
 
-  $line =~ s/\$([a-z_0-9-]+)(\.(\d+))?(\/([\+\-]\d+))?/__get_var( $1, $3, $args, $5 )/gie;
-  $line =~ s/#([0-9A-F]{3,6})([\+\-])(\d+)/__precolor( $1, $2, $3 )/gie;
+  $line =~ s/\$([a-z_0-9-]+)(\.(\d+))?(\/([\+\-]\d+))?/__get_var( $1, $3, $args, $5, $seen )/gie;
+  $line =~ s/#([0-9A-F]{3,6})([\+\-])(\d+)/__precolor( $1, $2, $3, $seen )/gie;
   return $line;
 }
 
@@ -245,10 +265,14 @@ sub __get_var
   my $var_idx  =    shift || 0;
   my $args     =    shift || [];
   my $bump     =    shift;
+  my $seen     =    shift || {};
 
-  return $args->[ $var_name ] . $bump           if $var_name =~ /^\d+$/;
-  return $VARS{ $var_name }[ $var_idx ] . $bump if exists $VARS{ $var_name };
-  return undef; # TODO: warning: unknown var name. error? fatal?
+  die "error: loop detected in line [$last_line]\n" if $seen->{ "$var_name.$var_idx" }++;
+  #print STDERR "+++ [$var_name] [$var_idx] [@$args] $bump\n";
+
+  return update_vars( $args->[ $var_name ] . $bump, $args, $seen )           if $var_name =~ /^\d+$/;
+  return update_vars( $VARS{ $var_name }[ $var_idx ] . $bump, $args, $seen ) if exists $VARS{ $var_name };
+  die "error: unknown var name [$var_name] in line [$last_line]\n" unless $opt_no_missing;
 }
 
 sub __precolor

@@ -41,11 +41,12 @@ available).
 
 Vars can self-reference:
 
-    $button_colors  #FFF  $2+4  #336699
+    $button_colors  #FFF  $3+4  #336699
 
 second item in this var will take value from the third and will bump it 4,
 result in $button_colors.2 will be #77AADD.  Vars with name '$digit' are
-expanded only at the same line of the var definition.
+expanded only at the same line of the var definition and always reference
+current items list.
 
 # VARS AND BLOCKS NAMES
 
@@ -129,15 +130,26 @@ file can have no path if it is in the current directory.
 
 # COMMENTS
 
-ALTER-CSS will skip and will not produce in output file all comment lines 
+ALTER-CSS recognizes this comments syntax:
 which start with:
 
-    /*$
+single line, inline comments:
 
-Those are for commenting variables, blocks, includes, which will not be in the
-output file and will be confusing to leave comments for those empty spaces.
+    /*$ ... */
 
-    PLEASE NOTE: This will work only for single line comments: /*$ ... */
+multiline:
+
+    /*$ ...
+    ...
+    ...
+    */ 
+
+ALTER-CSS comments will strip text before processing, so ALTER-CSS will not see
+any variables or blocks defined or used inside.
+
+PLEASE NOTE: all regular CSS comments are left intact and even will not be 
+considered comments by ALTER-CSS. so if any usage of non-defined vars or blocks
+will result in processing error!
 
 # PREDEFINED VARS
 
@@ -163,7 +175,7 @@ time of generation.
     
 # EXAMPLE
 
-There is an example file called "exaple.in.css", which has detailed explanation
+There is an example file called "example.in.css", which has detailed explanation
 of using vars and blocks and small but complex enough example for mixing blocks
 and vars.
 
@@ -189,5 +201,5 @@ CSS syntax, and $ is (still) free.
 
 # LICENSE
 
-Distributed under the GPL license, see COPYING file for the full text.
+Distributed under the GPLv2 license, see COPYING file for the full text.
 

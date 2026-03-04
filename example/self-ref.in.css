@@ -1,5 +1,9 @@
 
+$in #445599
 
-$asd #f00 $3+2 #445599
+$asd #f00 $3+2 $in+2
+$qwe #123 $3+2 $1+2
 
-color: $asd.2
+color1: $asd.2
+color2: $qwe.2
+
