@@ -114,7 +114,7 @@ more complex block example, it expects 5 arguments:
 $$color_box_3d
         color: $1;
         background-image: none;
-        background-color: #2;
+        background-color: $2;
         border-top:    solid 1px $4;
         border-left:   solid 1px $4;
         border-bottom: solid 1px $5;

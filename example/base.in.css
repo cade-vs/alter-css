@@ -1,0 +1,27 @@
+/*############################################################################
+##
+##  Decor application machinery core -- RDX Style
+##  2014-2023 (c) Vladi Belperchinov-Shabanski "Cade"
+##  <cade@bis.bg> <cade@biscom.net> <cade@cpan.org>
+##
+##  LICENSE: GPLv2
+##
+############################################################################*/
+
+/* $ALTER_CSS_GEN_WARNING -- GENERATED AT $ALTER_CSS_GEN_TIME */
+
+$base                 #444     #f1eee7
+
+/*
+$base                 #999     #123456
+$body-font                    normal 10pt rubik, sans-serif
+$footer-font                  prime
+$main-menu-font               bold 12pt oswald
+$view-edit-headers-font       bold 12pt oswald
+$input-controls-font               12pt rubik 
+$buttons-font                 bold 10pt rubik, sans-serif +++
+*/
+
+/*                        fg    bg    bg-image    */
+$body-colors             $base        
+base colors are $base
